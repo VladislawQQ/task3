@@ -22,14 +22,13 @@ class MyProfileFragment : Fragment(R.layout.fragment_my_profile) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding = FragmentMyProfileBinding.bind(view)
+        binding = FragmentMyProfileBinding.inflate(layoutInflater)
 
         askPermission()
         setListeners()
         roundProfilePhoto()
 
-        val email = args.email
-        setNameByEmail(email)
+        setNameByEmail(args.email)
     }
 
     private fun roundProfilePhoto() {
@@ -58,7 +57,7 @@ class MyProfileFragment : Fragment(R.layout.fragment_my_profile) {
 
     private fun viewMyContactsButton() {
         findNavController().navigate(
-            R.id.action_myProfileFragment_to_myContactsFragment
+            MyProfileFragmentDirections.actionMyProfileFragmentToMyContactsFragment()
         )
     }
 
@@ -76,15 +75,14 @@ class MyProfileFragment : Fragment(R.layout.fragment_my_profile) {
         if (hasReadContactPermission == PackageManager.PERMISSION_GRANTED) {
             READ_CONTACTS_GRANTED = true
         } else {
+            // TODO: register for activity result
             ActivityCompat.requestPermissions(
                 requireContext() as Activity,
                 arrayOf(android.Manifest.permission.READ_CONTACTS),
                 1)
         }
     }
-
     companion object {
         private var READ_CONTACTS_GRANTED = false
     }
-
 }

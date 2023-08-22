@@ -16,35 +16,39 @@ import com.example.task3.ui.utils.ext.setContactPhoto
 
 class ContactProfileFragment : Fragment(R.layout.fragment_contact_profile){
 
-    private lateinit var binding : FragmentContactProfileBinding
+    private val binding : FragmentContactProfileBinding by lazy {
+        FragmentContactProfileBinding.inflate(layoutInflater)
+    }
     private val args : ContactProfileFragmentArgs by navArgs()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding = FragmentContactProfileBinding.bind(view)
 
         val contact : Contact = args.contact
 
-        attachAnimation()
+        setAnimation()
         bindContactInfo(contact)
         setListeners()
     }
 
-    private fun attachAnimation() {
+    private fun setAnimation() {
         with(binding) {
             fragmentMyProfileImageViewProfilePhoto.transitionName = TRANSITION_NAME_IMAGE
             fragmentMyProfileTextViewProfileName.transitionName = TRANSITION_NAME_CONTACT_NAME
             fragmentMyProfileTextViewCareer.transitionName = TRANSITION_NAME_CAREER
+            // TODO: add anim to home address
         }
 
-        val animation = TransitionInflater.from(requireContext()).inflateTransition(R.transition.transition_move)
+        val animation = TransitionInflater.from(requireContext()).inflateTransition(
+            R.transition.transition_move
+        )
 
         sharedElementEnterTransition = animation
         sharedElementReturnTransition = animation
     }
 
     private fun setListeners() {
-        binding.fragmentMyProfileTextViewBack.setOnClickListener { findNavController().popBackStack() }
+        binding.fragmentMyProfileTextViewBack.setOnClickListener { findNavController().popBackStack() } // TODO: from popBackStack() to navigateUp()
     }
 
     private fun bindContactInfo(contact: Contact) {
@@ -54,6 +58,4 @@ class ContactProfileFragment : Fragment(R.layout.fragment_contact_profile){
             fragmentMyProfileImageViewProfilePhoto.setContactPhoto(contact.photo)
         }
     }
-
-
 }

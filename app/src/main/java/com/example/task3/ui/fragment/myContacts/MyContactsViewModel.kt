@@ -11,17 +11,23 @@ class MyContactsViewModel : ViewModel() {
     
     val contacts : StateFlow<List<Contact>> = contactService.contacts
 
-    fun getContact(index: Int): Contact = contactService.getContactByIndex(index)
+    // fun getContact(index: Int): Contact = contacts.value[index]// TODO: remove
 
-    fun getContactIndex(contact: Contact) : Int = contactService.getContactIndex(contact)
+    // fun getContactIndex(contact: Contact) : Int = contactService.getContactIndex(contact)  // TODO: remove
 
-    fun deleteContact(contact: Contact): Int = contactService.deleteContact(contact)
+    fun deleteContact(index: Int) = contactService.deleteContact(index)
+    fun deleteContact(contact: Contact) = contactService.deleteContact(contacts.value.indexOf(contact))
+    fun restoreContact() = contactService.restoreContact()
 
-    fun addContact(index: Int, contact: Contact) {
-        contactService.addContact(index, contact)
+    fun addContact(index: Int, contact: Contact) { // TODO: change
+        if(index == 0) {
+            contactService.addContact(contact)
+        } else {
+            contactService.addContact(contact, index)
+        }
     }
 
-    fun addContact(contact: Contact) {
-        contactService.addContact(contact)
-    }
+//    fun addContact(contact: Contact) {
+//        contactService.addContact(contact)
+//    }
 }

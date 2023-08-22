@@ -1,18 +1,21 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+
+    // safe args
     id 'androidx.navigation.safeargs.kotlin'
+    // transition model in safe args
     id 'kotlin-parcelize'
 }
 
 android {
     namespace 'com.example.task3'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.example.task3"
         minSdk 24
-        targetSdk 33
+        targetSdk 34
         versionCode 1
         versionName "1.0"
 

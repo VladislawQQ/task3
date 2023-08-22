@@ -8,10 +8,10 @@ object Constants {
     const val TRANSITION_NAME_CAREER = "TRANSITION_NAME_CAREER"
 
     // Add Contact Dialog Fragment
-    const val TAG = "Add contact dialog"
+    const val TAG = "Add contact dialog" // TODO: to dialog fragment
 
     // Validation
-    const val REGEX_UPPER_CASE = "[A-Z]"
+    const val REGEX_UPPER_CASE = "[A-Z]" // TODO: migration
     const val REGEX_DIGITS = "[0-9]"
     const val PASSWORD_LENGTH = 8
 

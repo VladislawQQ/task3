@@ -4,7 +4,7 @@ import android.util.Log
 
 const val TAG = "logTAG"
 
-fun logExt(
+fun log(
     message: String
 ) {
     Log.d(TAG, message)

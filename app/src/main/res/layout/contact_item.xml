@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/border_contact_item"
+    android:background="@drawable/bc_contact_item"
     android:orientation="horizontal"
     android:layout_marginBottom="@dimen/margin_small"
     android:padding="@dimen/padding_small">
@@ -13,7 +13,7 @@
         android:layout_width="@dimen/contact_item_size_profile_photo"
         android:layout_height="@dimen/contact_item_size_profile_photo"
         android:layout_marginEnd="@dimen/margin_small"
-        android:src="@drawable/profile_photo"
+        android:src="@drawable/ic_profile_photo"
         android:transitionName="contact_item_transition"/>
 
     <LinearLayout

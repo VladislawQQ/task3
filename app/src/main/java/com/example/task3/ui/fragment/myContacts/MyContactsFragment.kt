@@ -22,15 +22,34 @@ import com.example.task3.ui.fragment.addContact.ConfirmationListener
 import com.example.task3.ui.fragment.myContacts.adapter.ContactActionListener
 import com.example.task3.ui.fragment.myContacts.adapter.ContactAdapter
 import com.example.task3.ui.utils.Constants.TAG
+import com.example.task3.ui.utils.ext.swipeToDelete
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 
-class MyContactsFragment : Fragment(R.layout.fragment_my_contacts), ConfirmationListener {
+class MyContactsFragment : Fragment(R.layout.fragment_my_contacts),
+    ConfirmationListener {
 
-    private lateinit var binding : FragmentMyContactsBinding
-    private lateinit var adapter: ContactAdapter
+    private lateinit var binding: FragmentMyContactsBinding
+    private val adapter = ContactAdapter(contactActionListener = object : ContactActionListener {
+        override fun onContactDelete(contact: Contact) {
+            viewModel.deleteContact(contact)
+            showDeleteMessage()
+        }
 
-    private val contactViewModel : MyContactsViewModel by viewModels()
+        override fun onContactClick(
+            contact: Contact,
+            transitionNames: Array<Pair<View, String>>
+        ) {
+            val extras = FragmentNavigatorExtras(*transitionNames)
+
+            val direction: NavDirections = MyContactsFragmentDirections
+                .actionMyContactsFragmentToContactProfileFragment(contact)
+
+            findNavController().navigate(direction, extras)
+        }
+    })
+
+    private val viewModel: MyContactsViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -45,7 +64,7 @@ class MyContactsFragment : Fragment(R.layout.fragment_my_contacts), Confirmation
     private fun setListeners() {
         binding.fragmentMyContactTextViewAddContact.setOnClickListener { startDialogAddContact() }
         binding.fragmentMyContactsImageViewBack.setOnClickListener { imageViewBackListener() }
-        binding.fragmentMyContactImageViewSearch.setOnClickListener {  } // TODO: search in contacts 
+        binding.fragmentMyContactImageViewSearch.setOnClickListener { } // TODO: search in contacts
     }
 
     private fun imageViewBackListener() {
@@ -57,26 +76,10 @@ class MyContactsFragment : Fragment(R.layout.fragment_my_contacts), Confirmation
         addContactDialogFragment.show(childFragmentManager, TAG)
     }
 
-    private fun bindRecycleView() {
-        adapter = ContactAdapter(contactActionListener = object : ContactActionListener {
-            override fun onContactDelete(contact: Contact) {
-                val index = contactViewModel.getContactIndex(contact)
-                contactViewModel.deleteContact(contact)
-                showDeleteMessage(index, contact)
-            }
-
-            override fun onContactClick(contact: Contact, transitionNames: Array<Pair<View, String>>) {
-                val extras = FragmentNavigatorExtras(*transitionNames)
-
-                val direction: NavDirections = MyContactsFragmentDirections
-                    .actionMyContactsFragmentToContactProfileFragment(contact)
-
-                findNavController().navigate(direction, extras)
-            }
-        })
+    private fun bindRecycleView() { // TODO: change from lateinit
 
         val recyclerLayoutManager = LinearLayoutManager(activity)
-        with(binding){
+        with(binding) {
             fragmentMyContactRecyclerViewContacts.layoutManager = recyclerLayoutManager
             fragmentMyContactRecyclerViewContacts.adapter = adapter
         }
@@ -86,47 +89,49 @@ class MyContactsFragment : Fragment(R.layout.fragment_my_contacts), Confirmation
         postponeEnterTransition()
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                contactViewModel.contacts.collect {
+                viewModel.contacts.collect {
                     adapter.submitList(it)
-                    startPostponedEnterTransition()
+                    startPostponedEnterTransition() // TODO: remove
                 }
             }
         }
     }
 
     private fun addSwipeToDelete() {
-        ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0,
-            ItemTouchHelper.END or ItemTouchHelper.START) {
+        binding.fragmentMyContactRecyclerViewContacts.swipeToDelete { index ->
+            viewModel.deleteContact(index)
+            showDeleteMessage()
+        }
 
-            override fun onMove(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder,
-                target: RecyclerView.ViewHolder
-            ): Boolean = false
-
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val index = viewHolder.adapterPosition
-                val contact: Contact = contactViewModel.getContact(index)
-
-                contactViewModel.deleteContact(contact)
-                showDeleteMessage(index, contact)
-            }
-        }).attachToRecyclerView(binding.fragmentMyContactRecyclerViewContacts)
     }
 
-    private fun showDeleteMessage(index: Int, contact: Contact) {
+    private fun showDeleteMessage() {
         Snackbar.make(binding.root, R.string.message_delete, Snackbar.LENGTH_LONG)
             .setAction(getString(R.string.snackbar_action).uppercase()) {
-                contactViewModel.addContact(index, contact)
-            }.setActionTextColor(ContextCompat.getColor(requireContext(), R.color.contacts_activity_class_snackbar_action_color))
-            .setTextColor(ContextCompat.getColor(requireContext(), R.color.contacts_activity_class_snackbar_text_color))
+                viewModel.restoreContact()
+            }.setActionTextColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.contacts_activity_class_snackbar_action_color
+                )
+            )
+            .setTextColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.contacts_activity_class_snackbar_text_color
+                )
+            )
             .show()
     }
 
-    override fun onConfirmButtonClicked(contact: Contact) {
-        contactViewModel.addContact(contact)
+    override fun onSaveButtonClicked(contact: Contact) {
+        viewModel.addContact(0, contact)
         Snackbar.make(binding.root, R.string.message_add_contact, Snackbar.LENGTH_SHORT)
-            .setTextColor(ContextCompat.getColor(requireContext(), R.color.contacts_activity_class_snackbar_text_color))
-            .show()
+            .setTextColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.contacts_activity_class_snackbar_text_color
+                )
+            ).show()
     }
 }

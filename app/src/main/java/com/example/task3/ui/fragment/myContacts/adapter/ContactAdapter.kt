@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.task2.ui.adapter.diffUtil.ContactDiffUtil
+import com.example.task3.ui.fragment.myContacts.adapter.diffUtil.ContactDiffUtil
 import com.example.task3.data.contacts.model.Contact
 import com.example.task3.databinding.ContactItemBinding
 import com.example.task3.ui.utils.Constants.TRANSITION_NAME_CAREER
@@ -15,8 +15,7 @@ import com.example.task3.ui.utils.ext.setContactPhoto
 
 class ContactAdapter(
     private val contactActionListener: ContactActionListener
-)
-    : ListAdapter<Contact, ContactAdapter.ContactViewHolder>(ContactDiffUtil()) {
+) : ListAdapter<Contact, ContactAdapter.ContactViewHolder>(ContactDiffUtil()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContactViewHolder {
         val inflater: LayoutInflater = LayoutInflater.from(parent.context)
@@ -38,11 +37,7 @@ class ContactAdapter(
 
                 setListeners(contact)
 
-                with(contactItemImageViewProfilePhoto) {
-                    if (contact.photo.isNotBlank())
-                        setContactPhoto(contact.photo)
-                    else setContactPhoto()
-                }
+                contactItemImageViewProfilePhoto.setContactPhoto(contact.photo)
             }
         }
 
@@ -73,7 +68,7 @@ class ContactAdapter(
             }
         }
 
-        private fun setTransitionName (view: View, transitionName : String): Pair<View, String> {
+        private fun setTransitionName(view: View, transitionName: String): Pair<View, String> {
             view.transitionName = transitionName
             return view to transitionName
         }

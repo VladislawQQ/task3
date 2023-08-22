@@ -3,7 +3,7 @@ package com.example.task3
 import android.app.Application
 import android.content.ContentResolver
 
-class App : Application() {
+class App : Application() { // TODO: hilt
 
     override fun onCreate() {
         super.onCreate()

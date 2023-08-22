@@ -6,12 +6,12 @@ import java.util.UUID
 
 @Parcelize
 data class Contact (
-    var id: Long = UUID.randomUUID().mostSignificantBits,
-    val photo: String,
+    var id: Long = UUID.randomUUID().mostSignificantBits, // TODO: form Long to UUID
+    val photo: String = "",
     val name: String,
-    val career: String
+    val career: String // TODO: add address
 ) : Parcelable {
-    override fun toString(): String {
+    override fun toString(): String { // TODO: delete?
         return "Contact: id: $id, \nFull name: $name, \nCareer: $career, \nImage: $photo"
     }
 

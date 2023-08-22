@@ -2,6 +2,7 @@
 <resources>
 
     // core colors
+    <!-- core colors -->
     <color name="view_color">#242235</color>
     <color name="label_text_color">#FFFFFFFF</color>
     <color name="label_secondary_text_color">#BDBDBD</color>
